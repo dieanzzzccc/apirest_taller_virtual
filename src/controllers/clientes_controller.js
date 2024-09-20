@@ -77,7 +77,7 @@ controller.crear_nuevo_usuario = async (req, res) => {
 // Crear nuevo usuario
 controller.crear_nuevo_usuario = async (req, res) => {
     const { nombre, password } = req.body;
-
+    console.log(nombre,password)
     try {
         // Ejecutar el procedimiento almacenado
         await pool.query('CALL CREAR_NUEVO_USUARIO(?, ?)', [nombre, password]);
