@@ -8,7 +8,9 @@ const app = express();
 
 
 // Middleware para parsear JSON
+// Middleware para manejar JSON y datos de formularios
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Rutas
 app.use('/clientes', clientes);
