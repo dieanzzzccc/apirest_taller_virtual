@@ -76,7 +76,7 @@ controller.crear_nuevo_usuario = async (req, res) => {
 
 // Crear nuevo usuario
 controller.crear_nuevo_usuario = async (req, res) => {
-    const { usuario, password } = req.body;
+    const { nombre, password } = req.body;
 
     try {
         // Ejecutar el procedimiento almacenado
