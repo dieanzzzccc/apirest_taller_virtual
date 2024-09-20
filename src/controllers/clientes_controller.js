@@ -80,11 +80,11 @@ controller.crear_nuevo_usuario = async (req, res) => {
 
     try {
         // Ejecutar el procedimiento almacenado
-        await pool.query('CALL CREAR_NUEVO_USUARIO(?, ?)', [usuario, password]);
+        await pool.query('CALL CREAR_NUEVO_USUARIO(?, ?)', [nombre, password]);
 
         // Respuesta exitosa
         res.status(201).json({
-            mensaje: `Usuario ${usuario} creado con éxito`,
+            mensaje: `Usuario ${nombre} creado con éxito`,
         });
     } catch (error) {
         console.error('Error al crear el usuario:', error);
