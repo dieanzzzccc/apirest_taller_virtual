@@ -2,7 +2,7 @@ import express from 'express';
 import pool from './db.js';
 import clientes from './routes/clientes_routes.js';
 import {PORT} from './config.js'
-
+import cors from 'cors'; // Si estás usando CORS
 
 const app = express();
 
@@ -11,7 +11,7 @@ const app = express();
 // Middleware para manejar JSON y datos de formularios
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+app.use(cors()); // Si es necesario
 // Rutas
 app.use('/clientes', clientes);
 
