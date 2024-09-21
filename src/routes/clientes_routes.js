@@ -9,7 +9,7 @@ router.post('/crear_nuevo_usuario', clientesController.crear_nuevo_usuario);
 
 // Ruta protegida por el token
 router.get('/ruta_protegida', clientesController.ruta_protegida);
- 
+
 
 /*
 // Ruta protegida por el token
