@@ -24,6 +24,33 @@ controller.ruta_protegida = async (req, res) => {
     }
 };
 
+
+
+controller.crear_nuevo_usuario = async (req, res) => {
+}
+// Crear nuevo usuario
+controller.crear_nuevo_usuario = async (req, res) => {
+    const { nombre, password } = req.body;
+    console.log(nombre,password)
+    try {
+        // Ejecutar el procedimiento almacenado
+        await pool.query('CALL CREAR_NUEVO_USUARIO(?, ?)', [nombre, password]);
+        // Respuesta exitosa
+        res.status(201).json({
+            mensaje: `Usuario ${nombre} creado con éxito`,
+        });
+    } catch (error) {
+        console.error('Error al crear el usuario:', error);
+        res.status(500).json({ 
+            mensaje: 'Error al crear el usuario'
+        });
+        res.status(500).json({ mensaje: 'Error interno del servidor' });
+    }
+};
+
+
+
+
 // Verificar usuario y crear el token
 controller.verificar_usuario = async (req, res) => {
     const { usuario, password } = req.body;
