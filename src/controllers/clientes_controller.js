@@ -26,8 +26,6 @@ controller.ruta_protegida = async (req, res) => {
 
 
 
-controller.crear_nuevo_usuario = async (req, res) => {
-}
 // Crear nuevo usuario
 controller.crear_nuevo_usuario = async (req, res) => {
     const { nombre, password } = req.body;
@@ -53,14 +51,14 @@ controller.crear_nuevo_usuario = async (req, res) => {
 
 // Verificar usuario y crear el token
 controller.verificar_usuario = async (req, res) => {
-    const { usuario, password } = req.body;
+    const {email, password } = req.body;
 
     try {
-        const [result] = await pool.query('CALL LOGIN_USUARIO(?, ?)', [usuario, password]);
+        const [result] = await pool.query('CALL LOGIN_USUARIO(?, ?)', [email, password]);
 
         if (result && result[0][0].p_is_valid == '1') {
             const payload = {
-                usuario: usuario,
+                email,
                 idUsuario: result[0][0].id_usuario
             };
 
