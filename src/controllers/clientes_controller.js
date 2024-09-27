@@ -55,8 +55,8 @@ controller.verificar_usuario = async (req, res) => {
 
     try {
         const [result] = await pool.query('CALL LOGIN_USUARIO(?, ?)', [email, password]);
-        console.log(result)
-        /*if (result && result[0][0].p_is_valid == '1') {
+
+        if (result && result[0][0].p_is_valid == '1') {
             const payload = {
                 email,
                 idUsuario: result[0][0].id_usuario
