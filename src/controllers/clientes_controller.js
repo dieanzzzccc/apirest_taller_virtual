@@ -55,8 +55,8 @@ controller.verificar_usuario = async (req, res) => {
 
     try {
         const [result] = await pool.query('CALL LOGIN_USUARIO(?, ?)', [email, password]);
-
-        if (result && result[0][0].p_is_valid == '1') {
+        console.log(result)
+        /*if (result && result[0][0].p_is_valid == '1') {
             const payload = {
                 email,
                 idUsuario: result[0][0].id_usuario
@@ -73,7 +73,7 @@ controller.verificar_usuario = async (req, res) => {
             });
         } else {
             res.status(401).json({ mensaje: 'Usuario o contraseña incorrectos' });
-        }
+        }*/
     } catch (error) {
         console.error('Error al verificar el usuario:', error);
         res.status(500).json({ mensaje: 'Error interno del servidor' });
