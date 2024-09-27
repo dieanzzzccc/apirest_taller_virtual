@@ -73,7 +73,7 @@ controller.verificar_usuario = async (req, res) => {
             });
         } else {
             res.status(401).json({ mensaje: 'Usuario o contraseña incorrectos' });
-        }*/
+        }
     } catch (error) {
         console.error('Error al verificar el usuario:', error);
         res.status(500).json({ mensaje: 'Error interno del servidor' });
