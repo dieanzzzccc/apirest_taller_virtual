@@ -68,7 +68,8 @@ controller.verificar_usuario = async (req, res) => {
             res.status(200).json({ 
                 mensaje: 'Autenticación exitosa',
                 token: token,
-                data: result[0]
+                data: result[0][0].p_is_valid,
+                nombre: result[0][0].NOMBRES_USER
             });
         } else {
             res.status(401).json({ mensaje: 'Usuario o contraseña incorrectos' });
