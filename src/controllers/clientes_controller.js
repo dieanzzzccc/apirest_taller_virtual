@@ -58,7 +58,7 @@ controller.verificar_usuario = async (req, res) => {
 
         if (result && result[0][0].p_is_valid == '1') {
             const payload = {
-                email,
+
                 data:result
             };
 
