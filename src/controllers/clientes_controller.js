@@ -59,7 +59,7 @@ controller.verificar_usuario = async (req, res) => {
         if (result && result[0][0].p_is_valid == '1') {
             const payload = {
                 email,
-                idUsuario: result[0][0].id_usuario
+                data:result
             };
 
             // Generar el token usando el servicio
@@ -67,11 +67,9 @@ controller.verificar_usuario = async (req, res) => {
 
             res.status(200).json({ 
                 mensaje: 'Autenticación exitosa',
-                token: token,
-                data:result,
-                estado_password: result[0][0].p_is_valid,
-                nombre: result[0][0].NOMBRES_USER,
-                apellidos: result[0][0].APELLIDOS_USER
+                token: token
+                
+
             });
         } else {
             res.status(401).json({ mensaje: 'Usuario o contraseña incorrectos' });
