@@ -28,14 +28,14 @@ controller.ruta_protegida = async (req, res) => {
 
 // Crear nuevo usuario
 controller.crear_nuevo_usuario = async (req, res) => {
-    const { nombre, password } = req.body;
-    console.log(nombre,password)
+    const { usuario, password } = req.body;
+    //console.log(nombre,password)
     try {
         // Ejecutar el procedimiento almacenado
-        await pool.query('CALL CREAR_NUEVO_USUARIO(?, ?)', [nombre, password]);
+        await pool.query('CALL CREAR_NUEVO_USUARIO(?, ?)', [usuario, password]);
         // Respuesta exitosa
         res.status(201).json({
-            mensaje: `Usuario ${nombre} creado con éxito`,
+            mensaje: `Usuario ${usuario} creado con éxito`,
         });
     } catch (error) {
         console.error('Error al crear el usuario:', error);
@@ -66,7 +66,7 @@ controller.verificar_usuario = async (req, res) => {
 
             res.status(200).json({ 
                 mensaje: 'Autenticación exitosa',
-                token: token,
+                token,
                 result
                 
 
