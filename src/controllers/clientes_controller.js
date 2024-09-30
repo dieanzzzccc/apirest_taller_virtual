@@ -4,7 +4,7 @@ import tokenService from '../tokenService.js'; // Importa el servicio del token
 const controller = {};
 
 // Verificar el token en una ruta protegida
-controller.ruta_protegida = async (req, res) => {
+controller.ver_clientes = async (req, res) => {
     try {
         const token = req.headers['authorization'];
         if (!token) {
