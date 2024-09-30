@@ -18,7 +18,9 @@ controller.ver_clientes = async (req, res) => {
         console.log("¡ES EL TOKEN CORRECTO!");
         res.status(200).json({ mensaje: 'Accediste a una ruta protegida con el token correcto' });
         const [clientes] = await pool.query('CALL VER_CLIENTES()');
-            console.log(clientes)
+        res.status(201).json({
+            clientes
+        });
 
 
     } catch (error) {
