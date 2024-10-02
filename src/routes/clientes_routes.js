@@ -8,7 +8,7 @@ router.post('/verificar_usuario', clientesController.verificar_usuario);
 router.post('/crear_nuevo_usuario', clientesController.crear_nuevo_usuario);
 
 // Ruta protegida por el token
-router.get('/ver_clientes', clientesController.ver_clientes);
+router.get('/ver_usuarios', clientesController.ver_clientes);
 
 
 /*

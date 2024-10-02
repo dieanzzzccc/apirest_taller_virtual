@@ -4,7 +4,7 @@ import tokenService from '../tokenService.js'; // Importa el servicio del token
 const controller = {};
 
 // Verificar el token en una ruta protegida
-controller.ver_clientes = async (req, res) => {
+controller.ver_usuarios = async (req, res) => {
     try {
         const token = req.headers['authorization'];
         if (!token) {
@@ -17,7 +17,7 @@ controller.ver_clientes = async (req, res) => {
         // Si el token es válido, muestra el mensaje
         console.log("¡ES EL TOKEN CORRECTO!");
         //res.status(200).json({ mensaje: 'Accediste a una ruta protegida con el token correcto' });
-        const [clientes] = await pool.query('CALL VER_CLIENTES()');
+        const [clientes] = await pool.query('CALL VER_USUARIOS()');
         res.status(201).json({
             clientes
         });
