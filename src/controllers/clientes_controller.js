@@ -1,5 +1,5 @@
 import pool from '../db.js';
-import tokenService from '../tokenService.js'; // Importa el servicio del token
+import tokenService from '../middleware/verificarToken.js'; // Importa el servicio del token
 
 const controller = {};
 
