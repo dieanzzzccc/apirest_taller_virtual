@@ -1,9 +1,10 @@
 import pool from '../db.js';
-import tokenService from '../middleware/verificarToken.js'; // Importa el servicio del token
+import tokenService from '../services/tokenService.js'; // Importa el servicio del token
 
 const controller = {};
 
-clientesController.ver_usuarios = async (req, res) => {
+// Ver usuarios (ya protegido por el middleware)
+controller.ver_usuarios = async (req, res) => {
     try {
         const [clientes] = await pool.query('CALL VER_USUARIOS()');
         res.status(201).json({
@@ -18,47 +19,33 @@ clientesController.ver_usuarios = async (req, res) => {
 // Crear nuevo usuario
 controller.crear_nuevo_usuario = async (req, res) => {
     const { usuario, password } = req.body;
-    //console.log(nombre,password)
     try {
-        // Ejecutar el procedimiento almacenado
         await pool.query('CALL CREAR_NUEVO_USUARIO(?, ?)', [usuario, password]);
-        // Respuesta exitosa
         res.status(201).json({
             mensaje: `Usuario ${usuario} creado con éxito`,
         });
     } catch (error) {
         console.error('Error al crear el usuario:', error);
-        res.status(500).json({ 
-            mensaje: 'Error al crear el usuario'
-        });
-        res.status(500).json({ mensaje: 'Error interno del servidor' });
+        res.status(500).json({ mensaje: 'Error al crear el usuario' });
     }
 };
 
-
-
-
 // Verificar usuario y crear el token
 controller.verificar_usuario = async (req, res) => {
-    const {email, password } = req.body;
-
+    const { email, password } = req.body;
     try {
         const [result] = await pool.query('CALL LOGIN_USUARIO(?, ?)', [email, password]);
 
         if (result && result[0][0].p_is_valid == '1') {
-            const payload = {
-                email
-            };
+            const payload = { email };
 
             // Generar el token usando el servicio
             const token = tokenService.generarToken(payload);
 
-            res.status(200).json({ 
+            res.status(200).json({
                 mensaje: 'Autenticación exitosa',
                 token,
                 result
-                
-
             });
         } else {
             res.status(401).json({ mensaje: 'Usuario o contraseña incorrectos' });

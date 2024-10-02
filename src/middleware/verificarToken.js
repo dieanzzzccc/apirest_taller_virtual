@@ -1,4 +1,4 @@
-// middleware/auth.js
+
 import tokenService from '../services/tokenService.js';
 
 const verificarToken = async (req, res, next) => {
