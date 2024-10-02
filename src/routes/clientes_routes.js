@@ -1,7 +1,7 @@
 // routes/clientes_router.js
 import express from 'express';
 import clientesController from '../controllers/clientes_controller.js';
-import verificarToken from '../middleware/auth.js'; // Importar el middleware
+import verificarToken from '../middleware/verificarToken.js'; // Importar el middleware
 
 const router = express.Router();
 
