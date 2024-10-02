@@ -3,33 +3,17 @@ import tokenService from '../tokenService.js'; // Importa el servicio del token
 
 const controller = {};
 
-// Verificar el token en una ruta protegida
-controller.ver_usuarios = async (req, res) => {
+clientesController.ver_usuarios = async (req, res) => {
     try {
-        const token = req.headers['authorization'];
-        if (!token) {
-            return res.status(403).json({ mensaje: 'No se proporcionó un token' });
-        }
-
-        // Verificar el token
-        const decoded = await tokenService.verificarToken(token.split(' ')[1]);
-
-        // Si el token es válido, muestra el mensaje
-        console.log("¡ES EL TOKEN CORRECTO!");
-        //res.status(200).json({ mensaje: 'Accediste a una ruta protegida con el token correcto' });
         const [clientes] = await pool.query('CALL VER_USUARIOS()');
         res.status(201).json({
             clientes
         });
-
-
     } catch (error) {
-        console.error('Error al verificar el token:', error);
-        res.status(401).json({ mensaje: 'Token inválido' });
+        console.error('Error al obtener los usuarios:', error);
+        res.status(500).json({ mensaje: 'Error al obtener los usuarios' });
     }
 };
-
-
 
 // Crear nuevo usuario
 controller.crear_nuevo_usuario = async (req, res) => {
