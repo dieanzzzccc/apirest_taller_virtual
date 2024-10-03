@@ -18,9 +18,9 @@ controller.ver_usuarios = async (req, res) => {
 
 // Crear nuevo usuario
 controller.crear_nuevo_usuario = async (req, res) => {
-    const { usuario, password, nombres, apellidos, email, rol, fecha_creacion } = req.body;
+    const { usuario, password, nombres, apellidos, email, rol } = req.body;
     try {
-        await pool.query('CALL CREAR_NUEVO_USUARIO(?,?,?,?,?,?,?)', [email, password,nombres, apellidos, email, rol, fecha_creacion]);//SE COLOCA EMAIL COMO USUARIO OJO
+        await pool.query('CALL CREAR_NUEVO_USUARIO(?,?,?,?,?,?,NOW())', [email, password,nombres, apellidos, email, rol]);//SE COLOCA EMAIL COMO USUARIO OJO
         res.status(201).json({
             mensaje: `Usuario ${usuario} creado con éxito`,
         });
