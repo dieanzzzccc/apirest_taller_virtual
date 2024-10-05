@@ -1,27 +1,34 @@
-import multer from 'multer';
 import express from 'express';
+import multer from 'multer';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 import clientesController from '../controllers/clientes_controller.js';
-import verificarToken from '../middleware/verificarToken.js'; // Middleware de autenticación
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const router = express.Router();
 
-// Configurar Multer para la subida de videos
+// Configuración de Multer para subir archivos
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'uploads/'); // Carpeta de destino
+        const uploadPath = path.join(__dirname, '../uploads'); // Correcta ruta a uploads
+        cb(null, uploadPath);
     },
     filename: (req, file, cb) => {
-        cb(null, Date.now() + '-' + file.originalname); // Nombre único para evitar sobrescritura
+        cb(null, Date.now() + '-' + file.originalname); // Agregar timestamp para evitar conflictos de nombre
     }
 });
-const upload = multer({ storage });
 
-// Rutas existentes
+const upload = multer({ storage: storage });
+
+// Ruta para subir videos
+router.post('/subir_video', upload.single('video'), clientesController.subir_video);
+
+// Otras rutas...
 router.post('/verificar_usuario', clientesController.verificar_usuario);
 router.post('/crear_nuevo_usuario', clientesController.crear_nuevo_usuario);
-router.get('/ver_usuarios', verificarToken, clientesController.ver_usuarios);
-
-// Nueva ruta para subir videos
-router.post('/subir_video', verificarToken, upload.single('video'), clientesController.subir_video);
+router.get('/ver_usuarios', clientesController.ver_usuarios);
 
 export default router;

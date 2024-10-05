@@ -1,7 +1,22 @@
 import pool from '../db.js';
 import tokenService from '../services/tokenService.js'; // Importa el servicio del token
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import fs from 'fs';
+import path from 'path';
+import dotenv from 'dotenv';
+
+dotenv.config(); // Cargar las variables de entorno
 
 const controller = {};
+
+// Configura el cliente S3
+const s3 = new S3Client({
+    region: process.env.AWS_REGION, // Asegúrate de que esta línea esté presente
+    credentials: {
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    },
+});
 
 // Ver usuarios (ya protegido por el middleware)
 controller.ver_usuarios = async (req, res) => {
@@ -20,7 +35,7 @@ controller.ver_usuarios = async (req, res) => {
 controller.crear_nuevo_usuario = async (req, res) => {
     const { usuario, password, nombres, apellidos, email, rol } = req.body;
     try {
-        await pool.query('CALL CREAR_NUEVO_USUARIO(?,?,?,?,?,?,NOW())', [email, password,nombres, apellidos, email, rol]);//SE COLOCA EMAIL COMO USUARIO OJO
+        await pool.query('CALL CREAR_NUEVO_USUARIO(?,?,?,?,?,?,NOW())', [email, password, nombres, apellidos, email, rol]); // SE COLOCA EMAIL COMO USUARIO OJO
         res.status(201).json({
             mensaje: `Usuario ${usuario} creado con éxito`,
         });
@@ -30,20 +45,38 @@ controller.crear_nuevo_usuario = async (req, res) => {
     }
 };
 
-
-controller.subir_video = (req, res) => {
+// Subir video a S3
+controller.subir_video = async (req, res) => {
     if (!req.file) {
         return res.status(400).json({ mensaje: 'No se subió ningún archivo' });
     }
 
-    const filePath = req.file.path; // Ruta del video subido
+    const fileContent = fs.readFileSync(req.file.path);
+    const fileName = Date.now() + '-' + req.file.originalname; // Nombre único para el archivo
 
-    res.status(200).json({
-        mensaje: 'Video subido correctamente',
-        ruta: filePath // Devolver la ruta del video subido
-    });
+    const params = {
+        Bucket: process.env.AWS_BUCKET_NAME, // Cambia esto por el nombre de tu bucket
+        Key: fileName,
+        Body: fileContent,
+        ContentType: req.file.mimetype,
+    };
+
+    try {
+        const command = new PutObjectCommand(params);
+        await s3.send(command);
+        
+        // Elimina el archivo local después de subirlo
+        fs.unlinkSync(req.file.path);
+
+        res.status(200).json({
+            mensaje: 'Video subido correctamente',
+            ruta: `https://${params.Bucket}.s3.amazonaws.com/${fileName}`, // URL del video en S3
+        });
+    } catch (error) {
+        console.error('Error al subir el video:', error);
+        res.status(500).json({ mensaje: 'Error al subir el video' });
+    }
 };
-
 
 // Verificar usuario y crear el token
 controller.verificar_usuario = async (req, res) => {
