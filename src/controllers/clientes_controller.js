@@ -30,6 +30,21 @@ controller.crear_nuevo_usuario = async (req, res) => {
     }
 };
 
+
+controller.subir_video = (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ mensaje: 'No se subió ningún archivo' });
+    }
+
+    const filePath = req.file.path; // Ruta del video subido
+
+    res.status(200).json({
+        mensaje: 'Video subido correctamente',
+        ruta: filePath // Devolver la ruta del video subido
+    });
+};
+
+
 // Verificar usuario y crear el token
 controller.verificar_usuario = async (req, res) => {
     const { email, password } = req.body;
