@@ -1,6 +1,6 @@
 import pool from '../db.js';
 import tokenService from '../services/tokenService.js'; // Importa el servicio del token
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { S3Client, PutObjectCommand, ListObjectsCommand } from '@aws-sdk/client-s3';
 import fs from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
