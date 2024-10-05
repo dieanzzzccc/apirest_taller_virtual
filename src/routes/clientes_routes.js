@@ -30,5 +30,5 @@ router.post('/subir_video', upload.single('video'), clientesController.subir_vid
 router.post('/verificar_usuario', clientesController.verificar_usuario);
 router.post('/crear_nuevo_usuario', clientesController.crear_nuevo_usuario);
 router.get('/ver_usuarios', clientesController.ver_usuarios);
-
+router.get('/listar_videos', clientesController.listar_videos);
 export default router;

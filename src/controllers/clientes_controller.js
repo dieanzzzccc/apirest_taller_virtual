@@ -31,6 +31,28 @@ controller.ver_usuarios = async (req, res) => {
     }
 };
 
+// Obtener la lista de videos
+controller.listar_videos = async (req, res) => {
+    const params = {
+        Bucket: process.env.AWS_BUCKET_NAME,
+    };
+
+    try {
+        const command = new ListObjectsCommand(params);
+        const data = await s3.send(command);
+        const archivos = data.Contents.map((archivo) => ({
+            key: archivo.Key,
+            lastModified: archivo.LastModified,
+        }));
+
+        res.status(200).json(archivos);
+    } catch (error) {
+        console.error('Error al listar videos:', error);
+        res.status(500).json({ mensaje: 'Error al listar videos' });
+    }
+};
+
+
 // Crear nuevo usuario
 controller.crear_nuevo_usuario = async (req, res) => {
     const { usuario, password, nombres, apellidos, email, rol } = req.body;
