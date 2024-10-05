@@ -1,6 +1,7 @@
 import pool from '../db.js';
 import tokenService from '../services/tokenService.js'; // Importa el servicio del token
-import { S3Client, PutObjectCommand, ListObjectsCommand } from '@aws-sdk/client-s3';
+import { S3Client, PutObjectCommand, ListObjectsCommand, GetObjectCommand } from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner'; // Importa getSignedUrl para generar URLs firmadas
 import fs from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
@@ -31,7 +32,7 @@ controller.ver_usuarios = async (req, res) => {
     }
 };
 
-// Obtener la lista de videos
+// Obtener la lista de videos con URLs firmadas
 controller.listar_videos = async (req, res) => {
     const params = {
         Bucket: process.env.AWS_BUCKET_NAME,
@@ -40,9 +41,20 @@ controller.listar_videos = async (req, res) => {
     try {
         const command = new ListObjectsCommand(params);
         const data = await s3.send(command);
-        const archivos = data.Contents.map((archivo) => ({
-            key: archivo.Key,
-            lastModified: archivo.LastModified,
+        
+        // Genera las URLs firmadas para cada archivo
+        const archivos = await Promise.all(data.Contents.map(async (archivo) => {
+            const getObjectParams = {
+                Bucket: process.env.AWS_BUCKET_NAME,
+                Key: archivo.Key,
+            };
+            const signedUrl = await getSignedUrl(s3, new GetObjectCommand(getObjectParams), { expiresIn: 3600 }); // URL válida por 1 hora
+
+            return {
+                key: archivo.Key,
+                lastModified: archivo.LastModified,
+                url: signedUrl,
+            };
         }));
 
         res.status(200).json(archivos);
@@ -51,7 +63,6 @@ controller.listar_videos = async (req, res) => {
         res.status(500).json({ mensaje: 'Error al listar videos' });
     }
 };
-
 
 // Crear nuevo usuario
 controller.crear_nuevo_usuario = async (req, res) => {
