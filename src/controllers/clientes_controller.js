@@ -19,6 +19,42 @@ const s3 = new S3Client({
     },
 });
 
+// Obtener la lista de archivos para un curso específico
+controller.archivos_por_curso = async (req, res) => {
+    const cursoId = req.params.cursoId; // Obtener el ID del curso desde los parámetros
+
+    const params = {
+        Bucket: process.env.AWS_BUCKET_NAME,
+        Prefix: `${cursoId}/`, // Solo archivos dentro de la carpeta del curso
+    };
+
+    try {
+        const command = new ListObjectsCommand(params);
+        const data = await s3.send(command);
+
+        // Genera las URLs firmadas para cada archivo
+        const archivos = await Promise.all(data.Contents.map(async (archivo) => {
+            const getObjectParams = {
+                Bucket: process.env.AWS_BUCKET_NAME,
+                Key: archivo.Key,
+            };
+            const signedUrl = await getSignedUrl(s3, new GetObjectCommand(getObjectParams), { expiresIn: 3600 }); // URL válida por 1 hora
+
+            return {
+                key: archivo.Key,
+                lastModified: archivo.LastModified,
+                url: signedUrl,
+            };
+        }));
+
+        res.status(200).json(archivos);
+    } catch (error) {
+        console.error('Error al listar archivos del curso:', error);
+        res.status(500).json({ mensaje: 'Error al listar archivos del curso' });
+    }
+};
+
+
 controller.crear_nuevo_curso = async (req, res) => {
     const { titulo, descripcion, precio } = req.body;
 

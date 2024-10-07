@@ -33,4 +33,5 @@ router.post('/crear_nuevo_usuario', clientesController.crear_nuevo_usuario);
 router.post('/crear_nuevo_curso', clientesController.crear_nuevo_curso);
 router.get('/ver_usuarios', clientesController.ver_usuarios);
 router.get('/listar_videos', clientesController.listar_videos);
+router.get('/archivos_por_curso/:cursoId', clientesController.archivos_por_curso);
 export default router;
