@@ -78,17 +78,17 @@ controller.crear_nuevo_usuario = async (req, res) => {
     }
 };
 
-// Subir video a S3
-controller.subir_video = async (req, res) => {
+// Subir archivo a S3
+controller.subir_archivo = async (req, res) => {
     if (!req.file) {
         return res.status(400).json({ mensaje: 'No se subió ningún archivo' });
     }
 
     const fileContent = fs.readFileSync(req.file.path);
-    const fileName = Date.now() + '-' + req.file.originalname; // Nombre único para el archivo
+    const fileName = Date.now() + '-' + req.file.originalname;
 
     const params = {
-        Bucket: process.env.AWS_BUCKET_NAME, // Cambia esto por el nombre de tu bucket
+        Bucket: process.env.AWS_BUCKET_NAME,
         Key: fileName,
         Body: fileContent,
         ContentType: req.file.mimetype,
@@ -97,19 +97,19 @@ controller.subir_video = async (req, res) => {
     try {
         const command = new PutObjectCommand(params);
         await s3.send(command);
-        
-        // Elimina el archivo local después de subirlo
+
         fs.unlinkSync(req.file.path);
 
         res.status(200).json({
-            mensaje: 'Video subido correctamente',
-            ruta: `https://${params.Bucket}.s3.amazonaws.com/${fileName}`, // URL del video en S3
+            mensaje: 'Archivo subido correctamente',
+            ruta: `https://${params.Bucket}.s3.amazonaws.com/${fileName}`, // URL del archivo en S3
         });
     } catch (error) {
-        console.error('Error al subir el video:', error);
-        res.status(500).json({ mensaje: 'Error al subir el video' });
+        console.error('Error al subir el archivo:', error);
+        res.status(500).json({ mensaje: 'Error al subir el archivo' });
     }
 };
+
 
 // Verificar usuario y crear el token
 controller.verificar_usuario = async (req, res) => {
