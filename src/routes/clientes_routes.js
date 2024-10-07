@@ -30,6 +30,7 @@ router.get('/ver_cursos', clientesController.ver_cursos);
 // Otras rutas...
 router.post('/verificar_usuario', clientesController.verificar_usuario);
 router.post('/crear_nuevo_usuario', clientesController.crear_nuevo_usuario);
+router.post('/crear_nuevo_curso', clientesController.crear_nuevo_curso);
 router.get('/ver_usuarios', clientesController.ver_usuarios);
 router.get('/listar_videos', clientesController.listar_videos);
 export default router;
