@@ -32,6 +32,21 @@ controller.ver_usuarios = async (req, res) => {
     }
 };
 
+// Consultar cursos disponibles
+controller.ver_cursos = async (req, res) => {
+    try {
+        const [cursos] = await pool.query('CALL ver_cursos()');
+        res.status(200).json({
+            cursos
+        });
+    } catch (error) {
+        console.error('Error al consultar los cursos:', error);
+        res.status(500).json({ mensaje: 'Error al consultar los cursos' });
+    }
+};
+
+
+
 // Obtener la lista de videos con URLs firmadas
 controller.listar_videos = async (req, res) => {
     const params = {
