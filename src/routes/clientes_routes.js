@@ -24,7 +24,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // Ruta para subir archivos
-router.post('/subir_archivo', upload.single('archivo'), clientesController.subir_archivo);
+router.post('/subir_archivo', upload.single('file'), clientesController.subir_archivo);
 
 router.get('/ver_cursos', clientesController.ver_cursos);
 // Otras rutas...
