@@ -23,8 +23,9 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-// Ruta para subir videos
-router.post('/subir_video', upload.single('video'), clientesController.subir_video);
+// Ruta para subir archivos
+router.post('/subir_archivo', upload.single('archivo'), clientesController.subir_archivo);
+
 
 // Otras rutas...
 router.post('/verificar_usuario', clientesController.verificar_usuario);
