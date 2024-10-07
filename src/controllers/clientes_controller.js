@@ -153,18 +153,18 @@ controller.crear_nuevo_usuario = async (req, res) => {
     }
 };
 
-// Subir archivo a S3
 controller.subir_archivo = async (req, res) => {
-    if (!req.file) {
-        return res.status(400).json({ mensaje: 'No se subió ningún archivo' });
+    if (!req.file || !req.body.cursoId) {
+        return res.status(400).json({ mensaje: 'No se subió ningún archivo o no se proporcionó el ID del curso' });
     }
 
+    const cursoId = req.body.cursoId; // Obtén el ID del curso desde el cuerpo de la solicitud
     const fileContent = fs.readFileSync(req.file.path);
     const fileName = Date.now() + '-' + req.file.originalname;
 
     const params = {
         Bucket: process.env.AWS_BUCKET_NAME,
-        Key: fileName,
+        Key: `${cursoId}/${fileName}`, // Usa el ID del curso como prefijo
         Body: fileContent,
         ContentType: req.file.mimetype,
     };
@@ -177,7 +177,7 @@ controller.subir_archivo = async (req, res) => {
 
         res.status(200).json({
             mensaje: 'Archivo subido correctamente',
-            ruta: `https://${params.Bucket}.s3.amazonaws.com/${fileName}`, // URL del archivo en S3
+            ruta: `https://${params.Bucket}.s3.amazonaws.com/${cursoId}/${fileName}`, // URL del archivo en S3
         });
     } catch (error) {
         console.error('Error al subir el archivo:', error);
