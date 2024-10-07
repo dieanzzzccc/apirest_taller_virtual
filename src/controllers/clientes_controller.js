@@ -24,9 +24,9 @@ controller.crear_nuevo_curso = async (req, res) => {
 
     try {
         // Llamar al procedimiento almacenado y obtener el ID del nuevo curso
-        const [result] = await pool.query('CALL crear_nuevo_curso(?,?,?, @p_id_nuevo_curso); SELECT @p_id_nuevo_curso AS id;', [titulo, descripcion, precio]);
-
-        const idNuevoCurso = result[1][0].id; // Captura el ID del nuevo curso
+        const [result] = await pool.query('CALL crear_nuevo_curso(?, ?, ?);', [titulo, descripcion, precio]);
+        
+        const idNuevoCurso = result[0][0].id; // Captura el ID del nuevo curso
 
         // Crear carpeta en S3 con el ID del nuevo curso
         const params = {
@@ -42,7 +42,6 @@ controller.crear_nuevo_curso = async (req, res) => {
         res.status(500).json({ mensaje: 'Error al crear el curso' });
     }
 };
-
 // Ver usuarios (ya protegido por el middleware)
 controller.ver_usuarios = async (req, res) => {
     try {
