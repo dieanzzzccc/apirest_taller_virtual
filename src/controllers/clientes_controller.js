@@ -19,6 +19,7 @@ const s3 = new S3Client({
     },
 });
 
+
 // Obtener la lista de archivos para un curso específico
 controller.archivos_por_curso = async (req, res) => {
     const cursoId = req.params.cursoId; // Obtener el ID del curso desde los parámetros
@@ -32,8 +33,8 @@ controller.archivos_por_curso = async (req, res) => {
         const command = new ListObjectsCommand(params);
         const data = await s3.send(command);
 
-        // Genera las URLs firmadas para cada archivo
-        const archivos = await Promise.all(data.Contents.map(async (archivo) => {
+        // Filtra los objetos para eliminar las carpetas
+        const archivos = await Promise.all(data.Contents.filter(archivo => !archivo.Key.endsWith('/')).map(async (archivo) => {
             const getObjectParams = {
                 Bucket: process.env.AWS_BUCKET_NAME,
                 Key: archivo.Key,
