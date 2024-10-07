@@ -21,18 +21,22 @@ const s3 = new S3Client({
 
 controller.crear_nuevo_curso = async (req, res) => {
     const { titulo, descripcion, precio } = req.body;
+
     try {
-        await pool.query('CALL CREAR_NUEVO_CURSO(?,?,?)', [titulo, descripcion, precio]);
-        
-        // Crear carpeta en S3 con el nombre del curso
+        // Llamar al procedimiento almacenado y obtener el ID del nuevo curso
+        const [result] = await pool.query('CALL crear_nuevo_curso(?,?,?, @p_id_nuevo_curso); SELECT @p_id_nuevo_curso AS id;', [titulo, descripcion, precio]);
+
+        const idNuevoCurso = result[1][0].id; // Captura el ID del nuevo curso
+
+        // Crear carpeta en S3 con el ID del nuevo curso
         const params = {
             Bucket: process.env.AWS_BUCKET_NAME,
-            Key: `${titulo}/`, // Crear un directorio
+            Key: `${idNuevoCurso}/`, // Crear un directorio con el ID
         };
-        
+
         await s3.send(new PutObjectCommand(params));
-        
-        res.status(201).json({ mensaje: `Curso ${titulo} creado con éxito` });
+
+        res.status(201).json({ mensaje: `Curso ${titulo} creado con éxito`, id: idNuevoCurso });
     } catch (error) {
         console.error('Error al crear el curso:', error);
         res.status(500).json({ mensaje: 'Error al crear el curso' });
