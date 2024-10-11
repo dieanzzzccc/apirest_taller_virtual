@@ -152,15 +152,17 @@ controller.crear_nuevo_usuario = async (req, res) => {
         res.status(500).json({ mensaje: 'Error al crear el usuario' });
     }
 };
-
 controller.subir_archivo = async (req, res) => {
-    if (!req.file || !req.body.cursoId) {
-        return res.status(400).json({ mensaje: 'No se subió ningún archivo o no se proporcionó el ID del curso' });
+    if (!req.file || !req.body.cursoId || !req.body.nombreArchivo) {
+        return res.status(400).json({ mensaje: 'No se subió ningún archivo, no se proporcionó el ID del curso o no se indicó el nombre del archivo' });
     }
 
     const cursoId = req.body.cursoId; // Obtén el ID del curso desde el cuerpo de la solicitud
+    const nombrePersonalizado = req.body.nombreArchivo.trim(); // Nombre personalizado del archivo
+    const extensionArchivo = path.extname(req.file.originalname); // Obtener la extensión original del archivo
+    const fileName = `${nombrePersonalizado}${extensionArchivo}`; // Concatenar nombre personalizado con la extensión
+
     const fileContent = fs.readFileSync(req.file.path);
-    const fileName = Date.now() + '-' + req.file.originalname;
 
     const params = {
         Bucket: process.env.AWS_BUCKET_NAME,
@@ -184,6 +186,7 @@ controller.subir_archivo = async (req, res) => {
         res.status(500).json({ mensaje: 'Error al subir el archivo' });
     }
 };
+
 
 
 // Verificar usuario y crear el token
