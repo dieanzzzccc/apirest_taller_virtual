@@ -160,7 +160,7 @@ controller.subir_archivo = async (req, res) => {
 
     const cursoId = req.body.cursoId; // Obtén el ID del curso desde el cuerpo de la solicitud
     const fileContent = fs.readFileSync(req.file.path);
-    const fileName = Date.now() + '-' + req.file.originalname;
+    const fileName = req.file.originalname;
 
     const params = {
         Bucket: process.env.AWS_BUCKET_NAME,
