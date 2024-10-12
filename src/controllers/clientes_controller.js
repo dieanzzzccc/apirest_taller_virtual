@@ -34,7 +34,7 @@ controller.archivos_por_curso = async (req, res) => {
         const data = await s3.send(command);
 
         // Filtra los objetos para eliminar las carpetas
-        const archivos = await Promise.all(data.Contents.map(async (archivo) => {
+        const archivos = await Promise.all(data.Contents.filter(archivo => !archivo.Key.endsWith('/')).map(async (archivo) => {
             const getObjectParams = {
                 Bucket: process.env.AWS_BUCKET_NAME,
                 Key: archivo.Key,
