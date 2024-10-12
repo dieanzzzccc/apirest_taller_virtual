@@ -26,7 +26,7 @@ controller.archivos_por_curso = async (req, res) => {
 
     const params = {
         Bucket: process.env.AWS_BUCKET_NAME,
-       // Prefix: `${cursoId}/`, // Solo archivos dentro de la carpeta del curso
+        Prefix: `${cursoId}/`, // Solo archivos dentro de la carpeta del curso
     };
 
     try {
