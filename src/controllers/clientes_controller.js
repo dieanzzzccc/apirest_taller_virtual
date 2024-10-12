@@ -42,7 +42,7 @@ controller.archivos_por_curso = async (req, res) => {
             const signedUrl = await getSignedUrl(s3, new GetObjectCommand(getObjectParams), { expiresIn: 3600 }); // URL válida por 1 hora
 
             return {
-                key: archivo.Key,
+                key: archivo.Key.replace(`${cursoId}/`, ''),  // Elimina el prefijo del curso
                 lastModified: archivo.LastModified,
                 url: signedUrl,
             };
