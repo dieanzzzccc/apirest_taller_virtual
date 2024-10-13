@@ -188,12 +188,12 @@ controller.subir_archivo = async (req, res) => {
 
 // Verificar usuario y crear el token
 controller.verificar_usuario = async (req, res) => {
-    const { email, password } = req.body;
+    const { usuario, password } = req.body;
     try {
-        const [result] = await pool.query('CALL LOGIN_USUARIO(?, ?)', [email, password]);
+        const [result] = await pool.query('CALL LOGIN_USUARIO(?, ?)', [usuario, password]);
 
         if (result && result[0][0].p_is_valid == '1') {
-            const payload = { email };
+            const payload = { usuario };
 
             // Generar el token usando el servicio
             const token = tokenService.generarToken(payload);
